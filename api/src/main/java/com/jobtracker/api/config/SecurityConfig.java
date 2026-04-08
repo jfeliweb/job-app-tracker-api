@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,21 +25,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Disable CSRF — not needed for stateless JWT APIs
+            .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
-
-            // 2. Define which routes are public vs protected
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**", "/actuator/health").permitAll()
                 .anyRequest().authenticated()
             )
-
-            // 3. Stateless session — no server-side sessions, JWT only
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-
-            // 4. Plug in your JWT filter before Spring's default auth filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

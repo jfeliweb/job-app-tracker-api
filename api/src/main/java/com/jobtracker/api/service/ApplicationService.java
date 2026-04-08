@@ -61,6 +61,13 @@ public class ApplicationService {
         return toResponse(applicationRepository.save(app));
     }
 
+    public ApplicationResponse getById(Long id, String email) {
+        User user = getUser(email);
+        Application app = applicationRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+        return toResponse(app);
+    }
+
     public ApplicationResponse update(Long id, ApplicationRequest request, String email) {
         User user = getUser(email);
 

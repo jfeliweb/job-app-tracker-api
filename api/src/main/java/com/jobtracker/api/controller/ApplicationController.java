@@ -32,6 +32,13 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.create(request, user.getUsername()));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApplicationResponse> getById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.ok(applicationService.getById(id, user.getUsername()));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApplicationResponse> update(
             @PathVariable Long id,

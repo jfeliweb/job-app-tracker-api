@@ -19,21 +19,23 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Which frontend domains can talk to this API
-        config.setAllowedOrigins(List.of(frontendUrl));
+        config.setAllowedOrigins(List.of(
+            frontendUrl,
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000"
+        ));
 
-        // Which HTTP methods are allowed
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"
+        ));
 
-        // Which headers the frontend can send
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
-        // Allow the Authorization header to be read by the frontend
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        // Apply this CORS config to every route
         source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter(source);
