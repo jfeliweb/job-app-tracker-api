@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["jdk21"]
+
+[phases.build]
+cmds = ["mvn clean package -DskipTests"]
+
+[start]
+cmd = "java -Xmx300m -Xss512k -XX:+UseSerialGC -Dserver.port=$PORT -jar target/*.jar"
